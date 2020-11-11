@@ -1956,8 +1956,9 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/tasks', {
         name: this.name
       }).then(function (response) {
-        return _this.$emit('task-added', response.data);
-      })["catch"](function (error) {
+        return _this.$emit('task-added', response);
+      }) // * évènement personnalisé
+      ["catch"](function (error) {
         return console.log(error);
       });
     }
@@ -2010,7 +2011,7 @@ __webpack_require__.r(__webpack_exports__);
     update: function update() {
       var _this = this;
 
-      axios.patch('/tasks/edit/' + this.editTask.id, {
+      axios.patch('/tasks/update/' + this.editTask.id, {
         name: this.editTask.name
       }).then(function (response) {
         return _this.$emit('updated-task', response);
@@ -2078,12 +2079,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       tasks: {},
       // * tableau vide
-      editTask: ''
+      editTask: '',
+      query: ''
     };
   },
   created: function created() {
@@ -2104,6 +2122,32 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         return console.log(error);
       });
+    },
+    deleteTask: function deleteTask(id) {
+      var _this3 = this;
+
+      axios["delete"]('/tasks/delete/' + id).then(function (response) {
+        return _this3.tasks = response.data;
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
+    searchTask: function searchTask() {
+      var _this4 = this;
+
+      if (this.query.length > 3) {
+        axios.get('/tasks/' + this.query).then(function (response) {
+          return _this4.tasks = response.data;
+        })["catch"](function (error) {
+          return console.log(error);
+        });
+      } else {
+        axios.get('/tasks/').then(function (response) {
+          return _this4.tasks = response.data;
+        })["catch"](function (error) {
+          return console.log(error);
+        });
+      }
     },
     refresh: function refresh(tasks) {
       this.tasks = tasks.data;
@@ -37803,7 +37847,7 @@ var staticRenderFns = [
       _c(
         "h5",
         { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
-        [_vm._v("Modal title")]
+        [_vm._v("Créer ma tâche")]
       ),
       _vm._v(" "),
       _c(
@@ -38016,6 +38060,40 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
+      _c("div", { staticClass: "form-row" }, [
+        _c("div", { staticClass: "col-row" }, [
+          _c("label", { attrs: { for: "search" } }),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.query,
+                expression: "query"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "search",
+              id: "search",
+              name: "query",
+              placeholder: "Rechercher une tâche"
+            },
+            domProps: { value: _vm.query },
+            on: {
+              keyup: _vm.searchTask,
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.query = $event.target.value
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
       _c("add-task", { on: { "task-added": _vm.refresh } }),
       _vm._v(" "),
       _c(
@@ -38025,30 +38103,47 @@ var render = function() {
           _vm._l(_vm.tasks, function(task) {
             return _c(
               "li",
-              {
-                key: task.id,
-                staticClass: "list-group-item d-flex justify-content-between "
-              },
+              { staticClass: "list-group-item d-flex bd-highlight" },
               [
-                _c("a", { attrs: { href: "#" } }, [_vm._v(_vm._s(task.name))]),
+                _c("div", { staticClass: "mr-auto p-2 bd-highlight" }, [
+                  _c("a", { attrs: { href: "#" } }, [_vm._v(_vm._s(task.name))])
+                ]),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-secondary",
-                    attrs: {
-                      type: "button",
-                      "data-toggle": "modal",
-                      "data-target": "#editModal"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.getTask(task.id)
+                _c("div", { staticClass: "mr-2 bd-highlight" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: {
+                        type: "button",
+                        "data-toggle": "modal",
+                        "data-target": "#editModal"
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.getTask(task.id)
+                        }
                       }
-                    }
-                  },
-                  [_vm._v("Editer")]
-                )
+                    },
+                    [_vm._v("Editer\n                ")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: " bd-highlight" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.deleteTask(task.id)
+                        }
+                      }
+                    },
+                    [_vm._v("X")]
+                  )
+                ])
               ]
             )
           }),

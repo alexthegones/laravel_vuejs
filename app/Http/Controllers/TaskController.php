@@ -14,9 +14,14 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        if (request('query') ==! null) {
+            $search = Task::where('name', 'like', '%' . request('query') . '%')->get();
+            return response()->json($search);
+        } else {
+            $tasks = Task::all();
+            return response()->json($tasks, 200);
 
-        return response()->json($tasks, 200);
+        }
     }
 
     /**
@@ -37,10 +42,10 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $tasks = Task::all();
         $task = Task::create($request->all());
 
         if ($task) {
+            $tasks = Task::all();
             return response()->json($tasks);
         }
     }
@@ -78,12 +83,12 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $tasks = Task::all();
         $task = Task::find($id);
         $task->name = request('name');
         $task->save();
 
         if ($task) {
+            $tasks = Task::all();
             return response()->json($tasks);
         }
     }
@@ -96,6 +101,12 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $task = Task::find($id);
+        if ($task->delete()) {
+            $tasks = Task::all();
+            return response()->json($tasks);
+        } else {
+            return response()->json(['error' => 'La méthode destroy a fail..'], 425);
+        }
     }
 }

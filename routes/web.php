@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/tasks', 'TaskController@index');
+Route::get('/tasks/{query?}', 'TaskController@index');
 Route::post('/tasks', 'TaskController@store');
 Route::get('/tasks/edit/{id}', 'TaskController@edit');
-Route::patch('/tasks/edit/{id}', 'TaskController@update');
+Route::patch('/tasks/update/{id}', 'TaskController@update');
+Route::delete('/tasks/delete/{id}', 'TaskController@destroy');

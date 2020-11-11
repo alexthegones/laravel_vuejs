@@ -33,7 +33,7 @@ export default {
 
     methods: {
         update(){
-            axios.patch('/tasks/edit/' + this.editTask.id, {
+            axios.patch('/tasks/update/' + this.editTask.id, {
                 name: this.editTask.name
             })
             .then(response => this.$emit('updated-task', response))

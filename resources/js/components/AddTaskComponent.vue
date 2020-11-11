@@ -10,7 +10,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Créer ma tâche</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -45,7 +45,7 @@ export default {
             axios.post('/tasks', {
                 name: this.name
             })
-                .then(response => this.$emit('task-added', response.data))
+                .then(response => this.$emit('task-added', response))// * évènement personnalisé
                 .catch(error => console.log(error))
         }
     }
