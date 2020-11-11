@@ -26,6 +26,7 @@ Vue.use(VueRouter)
 import Home from './components/HomeComponent';
 import Task from './components/TaskComponent';
 Vue.component('add-task', require('./components/AddTaskComponent.vue').default);
+Vue.component('edit-task', require('./components/EditTaskComponent.vue').default);
 
 const routes = [
     {

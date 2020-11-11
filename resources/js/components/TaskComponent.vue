@@ -1,20 +1,22 @@
 <template>
     <div class="container">
         <add-task @task-added="refresh"></add-task>
-        <div class="card-header">Task Component</div>
-        <ul class="list-group">
-            <li class="list-group-item" v-for="task in tasks">
+        <ul class="list-group mt-4">
+            <li class="list-group-item d-flex justify-content-between " v-for="task in tasks" :key="task.id">
                 <a href="#">{{ task.name }}</a>
+                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editModal" @click="getTask(task.id)">Editer</button>
             </li>
+            <edit-task v-bind:editTask="editTask" @updated-task="refresh"></edit-task>
         </ul>
     </div>
 </template>
 
 <script>
 export default {
-    data() {
+    data:function () {
         return {
-            tasks: {}
+            tasks: {}, // * tableau vide
+            editTask: ''
         }
     },
     created() {
@@ -24,14 +26,19 @@ export default {
                 console.log(error))
     },
     methods: {
+        getTask(id){
+          axios.get('/tasks/edit/' + id)
+          .then(response => this.editTask = response.data)
+          .catch(error => console.log(error))
+        },
+
         refresh(tasks){
             this.tasks = tasks.data
         }
     },
-    name: "TaskComponent"
+
+    mounted(){
+        console.log('Composant monté.')
+    }
 }
 </script>
-
-<style scoped>
-
-</style>
